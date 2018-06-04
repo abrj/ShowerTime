@@ -1,24 +1,50 @@
 const React = require('react')
 const PeopleList = require('./PeopleList')
+const TimePicker = require('./TimePicker')
 
-const Landing = () => {
-  const handleChange = (ev) => {
+const Landing = React.createClass({
+  getInitialState () {
+    return {
+      selected: false,
+      person: '',
+      startTime: null,
+      endTime: null
+    }
+  },
+
+  handleChange (ev) {
     this.setState({
       selected: true,
       person: ev.target.value
     })
-  }
+  },
 
-  return (
-    <div className='app-container'>
-      <div className='home-info'>
-        <h1 className='title'>Shower Time</h1>
-        <input className='search' type='text' placeholder='Search' />
-        <button className='browse-all'> or Browse All</button>
-        <PeopleList people={['Anders', 'Mira', 'Andreas']} onChange={handleChange} />
+  timeSelected (start, end) {
+    this.setState({
+      startTime: start,
+      endTime: end
+    })
+  },
+
+  showTimePicker () {
+    if (this.state.selected) {
+      return (
+        <TimePicker myClick={this.timeSelected} />
+      )
+    }
+  },
+
+  render () {
+    return (
+      <div className='app-container'>
+        <div className='home-info'>
+          <h1 className='title'>Shower Time</h1>
+          <PeopleList people={['Anders', 'Mira', 'Andreas']} onChange={this.handleChange} />
+          {this.showTimePicker()}
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
+})
 
 module.exports = Landing

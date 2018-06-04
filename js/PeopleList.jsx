@@ -1,13 +1,13 @@
 const React = require('react')
 
 const PeopleList = (props) => (
-  <div>
-    <select onChange={props.onChange}>
-    {props.people.map((p) => (
-      <option> {p} </option>
-      ))}
-    </select>
-  </div>
+    <div className="ui selection dropdown">
+      <select onChange={props.onChange}>
+      {props.people.map((p) => (
+        <option> {p} </option>
+        ))}
+      </select>
+    </div>
 )
 
 PeopleList.propTypes = {
