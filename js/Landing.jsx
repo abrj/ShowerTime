@@ -15,7 +15,7 @@ const Landing = React.createClass({
   handleChange (ev) {
     this.setState({
       selected: true,
-      person: ev.target.value
+      person: ev
     })
   },
 
