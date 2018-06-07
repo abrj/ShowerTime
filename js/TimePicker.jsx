@@ -1,5 +1,6 @@
 const React = require('react')
 var TimePickerDropDown = require('basic-react-timepicker')
+import { Row, Button } from 'react-bootstrap'
 
 const TimePicker = React.createClass({
   propTypes: {
@@ -34,13 +35,15 @@ const TimePicker = React.createClass({
   render () {
     return (
       <div>
-        <TimePickerDropDown id="startTimer"step={5} beginLimit="6:00PM" endLimit="10:00PM" onChange={this.setStartTime} />
-        <TimePickerDropDown id="endTimer" step={5} beginLimit={this.state.startTime} endLimit="10:00PM" onChange={this.setEndTime} />
-        <div>
+        <Row>
+          <TimePickerDropDown id="startTimer"step={5} beginLimit="6:00PM" endLimit="10:00PM" onChange={this.setStartTime} />
+          <TimePickerDropDown id="endTimer" step={5} beginLimit={this.state.startTime} endLimit="10:00PM" onChange={this.setEndTime} />
+        </Row>
+        <Row>
           {this.state.timeSet &&
-            <button className='browse-all' onClick={this.submitTime}>Submit</button>
+            <Button bsStyle="info" className='browse-all' onClick={this.submitTime}>Submit</Button>
           }
-        </div>
+        </Row>
       </div>
     )
   }

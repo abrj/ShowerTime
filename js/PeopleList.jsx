@@ -1,5 +1,5 @@
 const React = require('react')
-import { DropdownButton, MenuItem } from 'react-bootstrap'
+import { Row, DropdownButton, MenuItem } from 'react-bootstrap'
 
 const PeopleList = React.createClass({
   propTypes: {
@@ -24,11 +24,13 @@ const PeopleList = React.createClass({
   render () {
     return (
       <div>
-        <DropdownButton title={this.state.dropDownTitle} onSelect={this.selected}>
-          {this.props.people.map((p) => (
-            <MenuItem eventKey={p}> {p} </MenuItem>
-            ))}
-        </DropdownButton>
+        <Row>
+          <DropdownButton className="peopleDropDown" xs={5} sm={5} title={this.state.dropDownTitle} onSelect={this.selected}>
+            {this.props.people.map((p) => (
+              <MenuItem eventKey={p}> {p} </MenuItem>
+              ))}
+          </DropdownButton>
+        </Row>
       </div>
     )
   }
