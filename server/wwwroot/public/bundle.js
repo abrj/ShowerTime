@@ -20532,10 +20532,11 @@
 	      startTime: start,
 	      endTime: end
 	    });
-	    _axios2.default.post('http://localhost:3000/submit', 'post message!').then(function (res) {
-	      console.log(res);
+	    _axios2.default.post('http://localhost:3000/submit', { name: this.state.person, start: start, end: end }).then(function (res) {
+	      console.log(res.people);
+	      console.log(res.data.people);
 	      _this.setState({
-	        showerTimes: res.people,
+	        showerTimes: res.data.people,
 	        newTimeAdded: true
 	      });
 	    });
@@ -20568,9 +20569,30 @@
 	        React.createElement(PeopleList, { people: ['Anders', 'Mira', 'Andreas', 'Guest'], onChange: this.handleChange }),
 	        this.showTimePicker()
 	      ),
-	      this.state.showerTimes.map(function (p) {
-	        return React.createElement(ShowerTime, { name: p.name, start: p.start, end: p.end });
-	      })
+	      React.createElement(
+	        _reactBootstrap.Grid,
+	        { className: 'home-info text-center' },
+	        React.createElement(
+	          _reactBootstrap.Row,
+	          { className: 'show-grid' },
+	          React.createElement(
+	            _reactBootstrap.Col,
+	            null,
+	            React.createElement(
+	              'h1',
+	              { className: 'title' },
+	              'Shower Times'
+	            )
+	          ),
+	          React.createElement(
+	            'ul',
+	            null,
+	            this.state.showerTimes.map(function (p) {
+	              return React.createElement(ShowerTime, { name: p.name, start: p.start, end: p.end });
+	            })
+	          )
+	        )
+	      )
 	    );
 	  }
 	});
@@ -44280,7 +44302,7 @@
 /* 472 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(module) {'use strict';
+	var require;var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {'use strict';
 
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -60707,23 +60729,31 @@
 	var ShowerTime = React.createClass({
 	  displayName: 'ShowerTime',
 
-	  proptypes: {
+	  propTypes: {
 	    name: React.PropTypes.string,
 	    start: React.PropTypes.string,
 	    end: React.PropTypes.string
 	  },
 
-	  getInitialState: function getInitialState() {
-	    return {
-	      name: '',
-	      start: '',
-	      end: ''
-	    };
-	  },
 	  render: function render() {
-	    return console.log('hey!');
+	    return React.createElement(
+	      'li',
+	      null,
+	      ' ',
+	      this.props.name,
+	      ' start: ',
+	      this.props.start,
+	      ' end: ',
+	      this.props.end
+	    );
 	  }
 	});
+
+	ShowerTime.propTypes = {
+	  name: React.PropTypes.string.isRequired,
+	  start: React.PropTypes.string.isRequired,
+	  end: React.PropTypes.string
+	};
 
 	module.exports = ShowerTime;
 

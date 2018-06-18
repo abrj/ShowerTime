@@ -4,12 +4,19 @@ var appRouter = function (app) {
   });
   // POST method route
   app.post('/submit', function (req, res) {
+    console.log("Got request...")
+    console.log(req.body)
+    json = req.body
+
+    console.log(json["name"])
+    console.log(json["start"])
+    console.log(json["end"])
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify(
       { people: [{
-        name: 'Anders',
-        start: '07.15',
-        end: '07.30'
+        name: json["name"],
+        start: json["start"],
+        end: json["end"]
         }
         ]
       } 

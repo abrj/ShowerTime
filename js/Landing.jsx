@@ -29,11 +29,12 @@ const Landing = React.createClass({
       startTime: start,
       endTime: end
     })
-    Axios.post('http://localhost:3000/submit', '')
+    Axios.post('http://localhost:3000/submit', {name: this.state.person, start: start, end: end})
       .then(res => {
-        console.log(res)
+        console.log(res.people)
+        console.log(res.data.people)
         this.setState({
-          showerTimes: res.people,
+          showerTimes: res.data.people,
           newTimeAdded: true
         })
       })
@@ -59,10 +60,19 @@ const Landing = React.createClass({
           <PeopleList people={['Anders', 'Mira', 'Andreas', 'Guest']} onChange={this.handleChange} />
           {this.showTimePicker()}
         </Grid>
-        {this.state.showerTimes.map((p) => (
-          <ShowerTime name={p.name} start={p.start} end={p.end} />
-          ))
-        }
+        <Grid className='home-info text-center'>
+          <Row className="show-grid">
+            <Col>
+              <h1 className='title'>Shower Times</h1>
+            </Col>
+            <ul>
+            {this.state.showerTimes.map((p) => (
+              <ShowerTime name={p.name} start={p.start} end={p.end} />
+              ))
+            }
+            </ul>
+          </Row>
+        </Grid>
       </div>
     )
   }
