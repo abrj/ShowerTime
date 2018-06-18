@@ -1,4 +1,5 @@
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   context: __dirname,
@@ -7,6 +8,12 @@ module.exports = {
     path: path.join(__dirname, '/public'),
     filename: 'bundle.js'
   },
+  plugins: [
+    new HtmlWebpackPlugin({  // Also generate a test.html
+      title: 'my apop',
+      template: 'index.html'
+    })
+  ],
   resolve: {
     extensions: ['', '.js', '.jsx', '.json']
   },
