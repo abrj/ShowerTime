@@ -65,6 +65,9 @@ const Landing = React.createClass({
             <Col>
               <h1 className='title'>Shower Times</h1>
             </Col>
+              {!this.state.newTimeAdded &&
+                <h3> No times yet! </h3>
+              }
             <ul>
             {this.state.showerTimes.map((p) => (
               <ShowerTime name={p.name} start={p.start} end={p.end} />
