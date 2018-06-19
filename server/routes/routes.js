@@ -1,4 +1,4 @@
-var appRouter = function (app) {
+var appRouter = function (app, db) {
   app.get("/", function(req, res) {
     res.status(200).send("Welcome to our restful API");
   });
@@ -7,20 +7,26 @@ var appRouter = function (app) {
     console.log("Got request...")
     console.log(req.body)
     json = req.body
-
+    name = json["name"]
+    start = json["start"]
+    end = json["end"]
+    db.addShowerTime(name,start,end)
     console.log(json["name"])
     console.log(json["start"])
     console.log(json["end"])
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify(
       { people: [{
-        name: json["name"],
-        start: json["start"],
-        end: json["end"]
+        name: name,
+        start: start,
+        end: end
         }
         ]
       } 
       ));
+  }),
+  app.get("/showertimes", function(req, res){
+    res.status(200).send(db.getAllShowerTimes())
   })
 }
 
