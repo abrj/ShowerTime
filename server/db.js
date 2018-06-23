@@ -45,19 +45,22 @@ module.exports = {
   },
 
   getAllShowerTimes: function(){
-    times = {}
-    db.each(`SELECT Id as id,
-                  Name as n,
-                  start as s,
-                  end as e
-           FROM users`, (err, row) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log(row.id + "\t" + row.name);
-    users[row.name] = row.id
-  });    
-  }
+    return new Promise(function (resolve, reject) {
+      db.all(`SELECT id as i,
+                    name as n,
+                    start as s,
+                    end as e
+             FROM showertimes`, (err, times) => {
+        if (err) {
+          console.error(err.message);
+          reject(times);
+        } else{
+          resolve(times)
+        }
+      });
+                
+      });
+  },
   
   getAllUsers: function(){
     db.each(`SELECT Id as id,

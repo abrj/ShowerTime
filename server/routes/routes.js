@@ -26,7 +26,10 @@ var appRouter = function (app, db) {
       ));
   }),
   app.get("/showertimes", function(req, res){
-    res.status(200).send(db.getAllShowerTimes())
+    db.getAllShowerTimes()
+    .then(function(data){
+      res.status(200).send({"times":data})
+    })
   })
 }
 

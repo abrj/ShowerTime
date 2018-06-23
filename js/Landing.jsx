@@ -24,6 +24,31 @@ const Landing = React.createClass({
     })
   },
 
+  getShowerTimes () {
+    Axios.get('http://localhost:3000/showertimes', '')
+    .then(res => {
+      console.log(res.data)
+      console.log(res.data.times)
+      this.setState({
+        showerTimes: res.data.times
+      })
+    })
+    if (this.state.showerTimes.length > 0) {
+      return (
+        <ul>
+          {this.state.showerTimes.map((p) => (
+            <ShowerTime name={p.n} start={p.s} end={p.e} />
+          ))
+        }
+        </ul>
+      )
+    } else {
+      return (
+        <h3> No times yet! </h3>
+      )
+    }
+  },
+
   timeSelected (start, end) {
     this.setState({
       startTime: start,
@@ -31,10 +56,8 @@ const Landing = React.createClass({
     })
     Axios.post('http://localhost:3000/submit', {name: this.state.person, start: start, end: end})
       .then(res => {
-        console.log(res.people)
-        console.log(res.data.people)
+        this.getShowerTimes()
         this.setState({
-          showerTimes: res.data.people,
           newTimeAdded: true
         })
       })
@@ -65,15 +88,7 @@ const Landing = React.createClass({
             <Col>
               <h1 className='title'>Shower Times</h1>
             </Col>
-              {!this.state.newTimeAdded &&
-                <h3> No times yet! </h3>
-              }
-            <ul>
-            {this.state.showerTimes.map((p) => (
-              <ShowerTime name={p.name} start={p.start} end={p.end} />
-              ))
-            }
-            </ul>
+              {this.getShowerTimes()}
           </Row>
         </Grid>
       </div>
