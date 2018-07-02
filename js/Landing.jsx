@@ -17,6 +17,10 @@ const Landing = React.createClass({
     }
   },
 
+  componentDidMount () {
+    this.getShowerTimes()
+  },
+
   handleChange (ev) {
     this.setState({
       selected: true,
@@ -33,14 +37,17 @@ const Landing = React.createClass({
         showerTimes: res.data.times
       })
     })
+  },
+
+  showShowerTimes () {
     if (this.state.showerTimes.length > 0) {
       return (
-        <ul>
+        <Grid>
           {this.state.showerTimes.map((p) => (
             <ShowerTime name={p.n} start={p.s} end={p.e} />
           ))
         }
-        </ul>
+        </Grid>
       )
     } else {
       return (
@@ -86,9 +93,9 @@ const Landing = React.createClass({
         <Grid className='home-info text-center'>
           <Row className="show-grid">
             <Col>
-              <h1 className='title'>Shower Times</h1>
+              <h1 className='title'>Today</h1>
             </Col>
-              {this.getShowerTimes()}
+              {this.showShowerTimes()}
           </Row>
         </Grid>
       </div>

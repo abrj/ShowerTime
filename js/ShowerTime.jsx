@@ -1,4 +1,5 @@
 const React = require('react')
+import { Row, Button, Col } from 'react-bootstrap'
 
 const ShowerTime = React.createClass({
   propTypes: {
@@ -9,7 +10,20 @@ const ShowerTime = React.createClass({
 
   render () {
     return (
-      <li> {this.props.name} start: {this.props.start} end: {this.props.end}</li>
+      <Row>
+        <Col xs={2} md={2}>
+          <p>{this.props.name}</p>
+        </Col>
+        <Col xs={5} md={2}>
+          <p>{this.props.start} -- {this.props.end}</p>
+        </Col>
+        <Col xs={1} md={2}>
+          <Button bsSize="xsmall" bsStyle="info">Edit</Button>
+        </Col>
+        <Col xs={1} md={2}>
+          <Button bsSize="xsmall" bsStyle="danger">Delete</Button>
+        </Col>
+      </Row>
     )
   }
 

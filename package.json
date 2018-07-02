@@ -17,6 +17,7 @@
     "css-loader": "^0.28.11",
     "express": "4.13.4",
     "lodash": "4.6.1",
+    "node-datetime": "^2.0.6",
     "react": "^0.14.9",
     "react-bootstrap": "^0.32.1",
     "react-bootstrap-time-picker": "^1.0.3",

@@ -6,3 +6,4 @@ coverage
 .DS_Store
 */public/*
 *package-lock.json
+server/wwwroot/public/bundle.js
