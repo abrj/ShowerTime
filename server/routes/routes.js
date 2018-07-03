@@ -30,6 +30,10 @@ var appRouter = function (app, db) {
     .then(function(data){
       res.status(200).send({"times":data})
     })
+  }),
+  app.post('/delete', function (req, res) {
+    console.log(req.body["database_id"])
+    db.deleteShowerTime(req.body["database_id"])
   })
 }
 

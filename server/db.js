@@ -48,6 +48,7 @@ module.exports = {
     return new Promise(function (resolve, reject) {
       db.all(`SELECT id as i,
                     name as n,
+                    date as d,
                     start as s,
                     end as e
              FROM showertimes`, (err, times) => {
@@ -60,6 +61,11 @@ module.exports = {
       });
                 
       });
+  },
+
+  deleteShowerTime: function(id){
+    console.log("DELETING showertime with ID: " + id)
+    db.run('DELETE FROM showertimes WHERE id='+id)
   },
   
   getAllUsers: function(){

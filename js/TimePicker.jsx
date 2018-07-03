@@ -10,8 +10,8 @@ const TimePicker = React.createClass({
 
   getInitialState () {
     return {
-      startTime: '6:00PM',
-      endTime: '6:05PM',
+      startTime: '6:00AM',
+      endTime: '6:05AM',
       timeSet: false,
       dropDownTitle: 'today',
       dates: ['today', 'tomorrow', 'day after']
@@ -19,16 +19,16 @@ const TimePicker = React.createClass({
   },
 
   componentDidMount () {
-    var dates = []
-    dates.push('tomorrow')
-    dates.push('today')
-    var dt = datetime.create()
-    var now = dt.format('d/m')
-    var dayAfter = now.offsetInDays(1)
-    dates.push(dayAfter)
-    this.setState({
-      dates: dates
-    })
+    // var dates = []
+    // dates.push('tomorrow')
+    // dates.push('today')
+    datetime.create()
+    // var now = dt.format('d/m')
+    // var dayAfter = now.offsetInDays(1)
+    // dates.push(dayAfter)
+    // this.setState({
+    //   dates: dates
+    // })
   },
 
   setStartTime (ev) {
@@ -72,8 +72,8 @@ const TimePicker = React.createClass({
           {this.showDateDropDown()}
         </Row>
         <Row>
-          <TimePickerDropDown id="startTimer"step={5} beginLimit="6:00PM" endLimit="10:00PM" onChange={this.setStartTime} />
-          <TimePickerDropDown id="endTimer" step={5} beginLimit={this.state.startTime} endLimit="10:00PM" onChange={this.setEndTime} />
+          <TimePickerDropDown id="startTimer"step={5} beginLimit="6:00AM" endLimit="10:00AM" onChange={this.setStartTime} />
+          <TimePickerDropDown id="endTimer" step={5} beginLimit={this.state.startTime} endLimit="10:00AM" onChange={this.setEndTime} />
         </Row>
         <Row>
           {this.state.timeSet &&

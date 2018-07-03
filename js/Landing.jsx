@@ -39,12 +39,24 @@ const Landing = React.createClass({
     })
   },
 
+  sortTimes (a, b) {
+    a = parseInt(a.substring(0, a.length - 2).replace(':', ''))
+    b = parseInt(b.substring(0, b.length - 2).replace(':', ''))
+    if (a > b) {
+      return true
+    } else {
+      return false
+    }
+  },
+
   showShowerTimes () {
     if (this.state.showerTimes.length > 0) {
       return (
         <Grid>
-          {this.state.showerTimes.map((p) => (
-            <ShowerTime name={p.n} start={p.s} end={p.e} />
+          {this.state.showerTimes
+            .sort((a, b) => this.sortTimes(a.s, b.s))
+            .map((p) => (
+              <ShowerTime name={p.n} start={p.s} end={p.e} date={p.d} id={p.i} deleteOnClick={this.deleteTime} editOnClick={this.editTime} />
           ))
         }
         </Grid>
@@ -65,9 +77,20 @@ const Landing = React.createClass({
       .then(res => {
         this.getShowerTimes()
         this.setState({
-          newTimeAdded: true
+          newTimeAdded: true,
+          selected: false
         })
       })
+  },
+
+  deleteTime (id) {
+    console.log(id)
+    Axios.post('http://localhost:3000/delete', {database_id: id})
+    this.getShowerTimes()
+  },
+
+  editTime (id) {
+    console.log(id)
   },
 
   showTimePicker () {
@@ -81,8 +104,8 @@ const Landing = React.createClass({
   render () {
     return (
       <div>
-        <Grid className='home-info text-center'>
-          <Row className="show-grid">
+        <Grid bsClass='container text-center'>
+          <Row>
             <Col>
               <h1 className='title'>Shower Time</h1>
             </Col>
@@ -90,13 +113,13 @@ const Landing = React.createClass({
           <PeopleList people={['Anders', 'Mira', 'Andreas', 'Guest']} onChange={this.handleChange} />
           {this.showTimePicker()}
         </Grid>
-        <Grid className='home-info text-center'>
-          <Row className="show-grid">
+        <Grid bsClass='container text-center'>
+          <Row>
             <Col>
               <h1 className='title'>Today</h1>
             </Col>
-              {this.showShowerTimes()}
           </Row>
+            {this.showShowerTimes()}
         </Grid>
       </div>
     )

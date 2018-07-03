@@ -20504,7 +20504,7 @@
 
 	var PeopleList = __webpack_require__(469);
 	var TimePicker = __webpack_require__(470);
-	var ShowerTime = __webpack_require__(598);
+	var ShowerTime = __webpack_require__(602);
 
 
 	var Landing = React.createClass({
@@ -20519,27 +20519,78 @@
 	      showerTimes: []
 	    };
 	  },
+	  componentDidMount: function componentDidMount() {
+	    this.getShowerTimes();
+	  },
 	  handleChange: function handleChange(ev) {
 	    this.setState({
 	      selected: true,
 	      person: ev
 	    });
 	  },
-	  timeSelected: function timeSelected(start, end) {
+	  getShowerTimes: function getShowerTimes() {
 	    var _this = this;
+
+	    _axios2.default.get('http://localhost:3000/showertimes', '').then(function (res) {
+	      console.log(res.data);
+	      console.log(res.data.times);
+	      _this.setState({
+	        showerTimes: res.data.times
+	      });
+	    });
+	  },
+	  sortTimes: function sortTimes(a, b) {
+	    a = parseInt(a.substring(0, a.length - 2).replace(':', ''));
+	    b = parseInt(b.substring(0, b.length - 2).replace(':', ''));
+	    if (a > b) {
+	      return true;
+	    } else {
+	      return false;
+	    }
+	  },
+	  showShowerTimes: function showShowerTimes() {
+	    var _this2 = this;
+
+	    if (this.state.showerTimes.length > 0) {
+	      return React.createElement(
+	        _reactBootstrap.Grid,
+	        null,
+	        this.state.showerTimes.sort(function (a, b) {
+	          return _this2.sortTimes(a.s, b.s);
+	        }).map(function (p) {
+	          return React.createElement(ShowerTime, { name: p.n, start: p.s, end: p.e, date: p.d, id: p.i, deleteOnClick: _this2.deleteTime, editOnClick: _this2.editTime });
+	        })
+	      );
+	    } else {
+	      return React.createElement(
+	        'h3',
+	        null,
+	        ' No times yet! '
+	      );
+	    }
+	  },
+	  timeSelected: function timeSelected(start, end) {
+	    var _this3 = this;
 
 	    this.setState({
 	      startTime: start,
 	      endTime: end
 	    });
 	    _axios2.default.post('http://localhost:3000/submit', { name: this.state.person, start: start, end: end }).then(function (res) {
-	      console.log(res.people);
-	      console.log(res.data.people);
-	      _this.setState({
-	        showerTimes: res.data.people,
-	        newTimeAdded: true
+	      _this3.getShowerTimes();
+	      _this3.setState({
+	        newTimeAdded: true,
+	        selected: false
 	      });
 	    });
+	  },
+	  deleteTime: function deleteTime(id) {
+	    console.log(id);
+	    _axios2.default.post('http://localhost:3000/delete', { database_id: id });
+	    this.getShowerTimes();
+	  },
+	  editTime: function editTime(id) {
+	    console.log(id);
 	  },
 	  showTimePicker: function showTimePicker() {
 	    if (this.state.selected) {
@@ -20552,10 +20603,10 @@
 	      null,
 	      React.createElement(
 	        _reactBootstrap.Grid,
-	        { className: 'home-info text-center' },
+	        { bsClass: 'container text-center' },
 	        React.createElement(
 	          _reactBootstrap.Row,
-	          { className: 'show-grid' },
+	          null,
 	          React.createElement(
 	            _reactBootstrap.Col,
 	            null,
@@ -20571,27 +20622,21 @@
 	      ),
 	      React.createElement(
 	        _reactBootstrap.Grid,
-	        { className: 'home-info text-center' },
+	        { bsClass: 'container text-center' },
 	        React.createElement(
 	          _reactBootstrap.Row,
-	          { className: 'show-grid' },
+	          null,
 	          React.createElement(
 	            _reactBootstrap.Col,
 	            null,
 	            React.createElement(
 	              'h1',
 	              { className: 'title' },
-	              'Shower Times'
+	              'Today'
 	            )
-	          ),
-	          React.createElement(
-	            'ul',
-	            null,
-	            this.state.showerTimes.map(function (p) {
-	              return React.createElement(ShowerTime, { name: p.name, start: p.start, end: p.end });
-	            })
 	          )
-	        )
+	        ),
+	        this.showShowerTimes()
 	      )
 	    );
 	  }
@@ -44135,7 +44180,7 @@
 
 	  getInitialState: function getInitialState() {
 	    return {
-	      dropDownTitle: 'Select a Name'
+	      dropDownTitle: 'Select a name'
 	    };
 	  },
 	  selected: function selected(ev) {
@@ -44187,6 +44232,7 @@
 
 	var React = __webpack_require__(12);
 	var TimePickerDropDown = __webpack_require__(471);
+	var datetime = __webpack_require__(598);
 
 
 	var TimePicker = React.createClass({
@@ -44195,12 +44241,27 @@
 	  propTypes: {
 	    myClick: React.PropTypes.func
 	  },
+
 	  getInitialState: function getInitialState() {
 	    return {
-	      startTime: '6:00PM',
-	      endTime: '6:05PM',
-	      timeSet: false
+	      startTime: '6:00AM',
+	      endTime: '6:05AM',
+	      timeSet: false,
+	      dropDownTitle: 'today',
+	      dates: ['today', 'tomorrow', 'day after']
 	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    // var dates = []
+	    // dates.push('tomorrow')
+	    // dates.push('today')
+	    datetime.create();
+	    // var now = dt.format('d/m')
+	    // var dayAfter = now.offsetInDays(1)
+	    // dates.push(dayAfter)
+	    // this.setState({
+	    //   dates: dates
+	    // })
 	  },
 	  setStartTime: function setStartTime(ev) {
 	    this.setState({
@@ -44217,6 +44278,26 @@
 	  submitTime: function submitTime() {
 	    this.props.myClick(this.state.startTime, this.state.endTime);
 	  },
+	  showDateDropDown: function showDateDropDown() {
+	    return React.createElement(
+	      _reactBootstrap.DropdownButton,
+	      { className: 'dateDateDropdown', xs: 5, sm: 5, title: this.state.dropDownTitle, onSelect: this.selected },
+	      this.state.dates.map(function (d) {
+	        return React.createElement(
+	          _reactBootstrap.MenuItem,
+	          { eventKey: d },
+	          ' ',
+	          d,
+	          ' '
+	        );
+	      })
+	    );
+	  },
+	  selected: function selected(ev) {
+	    this.setState({
+	      dropDownTitle: ev
+	    });
+	  },
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -44224,8 +44305,13 @@
 	      React.createElement(
 	        _reactBootstrap.Row,
 	        null,
-	        React.createElement(TimePickerDropDown, { id: 'startTimer', step: 5, beginLimit: '6:00PM', endLimit: '10:00PM', onChange: this.setStartTime }),
-	        React.createElement(TimePickerDropDown, { id: 'endTimer', step: 5, beginLimit: this.state.startTime, endLimit: '10:00PM', onChange: this.setEndTime })
+	        this.showDateDropDown()
+	      ),
+	      React.createElement(
+	        _reactBootstrap.Row,
+	        null,
+	        React.createElement(TimePickerDropDown, { id: 'startTimer', step: 5, beginLimit: '6:00AM', endLimit: '10:00AM', onChange: this.setStartTime }),
+	        React.createElement(TimePickerDropDown, { id: 'endTimer', step: 5, beginLimit: this.state.startTime, endLimit: '10:00AM', onChange: this.setEndTime })
 	      ),
 	      React.createElement(
 	        _reactBootstrap.Row,
@@ -60724,27 +60810,765 @@
 
 	'use strict';
 
+	var DateTime = __webpack_require__(599);
+	var TimedNumber = __webpack_require__(600);
+	var TimedState = __webpack_require__(601);
+
+	// global offsets for datetime
+	var offsets = {
+		days: 0,
+		hours: 0
+	};
+
+	// global default format
+	var globalDefaultFormat = null;
+
+	exports.setOffsetInDays = function (d) {
+
+		if (isNaN(d)) {
+			throw new Error('invalidOffset');
+		}
+
+		offsets.days = d;
+	};
+
+	exports.setOffsetInHours = function (h) {
+
+		if (isNaN(h)) {
+			throw new Error('invalidOffset');
+		}
+
+		offsets.hours = h;
+	};
+
+	exports.setDefaultFormat = function (format) {
+		globalDefaultFormat = format;
+	};
+
+	exports.setWeekNames = function (list) {
+		DateTime.setWeekNames(list);
+	};
+
+	exports.setShortWeekNames = function (list) {
+		DateTime.setShortWeekNames(list);
+	};
+
+	exports.setMonthName = function (list) {
+		DateTime.setMonthName(list);
+	};
+
+	exports.setShortMonthNames = function (list) {
+		DateTime.setShortMonthName(list);
+	};
+
+	exports.setPeriod = function (list) {
+		DateTime.setPeriod(list);
+	};
+
+	exports.create = function (now, defaultFormat) {
+
+		if (!defaultFormat && globalDefaultFormat) {
+			defaultFormat = globalDefaultFormat;
+		}
+
+		var d = new DateTime(now, defaultFormat);
+
+		if (offsets.days !== 0) {
+			d.offsetInDays(offsets.days);
+		}
+
+		if (offsets.hours !== 0) {
+			d.offsetInHours(offsets.hours);
+		}
+
+		return d;
+	};
+
+	exports.createTimedNumber = function (conf) {
+		return new TimedNumber(conf);
+	};
+
+	exports.createTimedState = function (conf) {
+		return new TimedState(conf);
+	};
+
+/***/ }),
+/* 599 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	var FORMATS = {
+		y: getYear,
+		Y: getFullYear,
+		m: getMonth,
+		n: getMonthName,
+		f: getMonthFullName,
+		d: getDay,
+		H: getMilitaryHours,
+		I: getHours,
+		M: getMinutes,
+		S: getSeconds,
+		N: getMillisec,
+		w: getWeekday,
+		W: getFullWeekday,
+		p: getPeriod
+	};
+
+	var PERIOD = {
+		AM: 'AM',
+		PM: 'PM'
+	};
+
+	var WEEKS = {
+		ABB: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+		FULL: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+	};
+
+	var MONTHS = {
+		ABB: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+		FULL: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+	};
+
+	var ONEDAY = 86400000;
+	var ONEHOUR = 3600000;
+
+	function DateTime(now, defaultFormat) {
+		this._created = Date.now();
+		this._now = now ? new Date(now) : new Date();
+		this._delta = this._created - this._now.getTime();
+		this._defaultFormat = defaultFormat || null;
+	}
+
+	DateTime.setWeekNames = function (names) {
+		for (var i = 0, len = names.length; i < len; i++) {
+			if (!names[i]) {
+				continue;
+			}
+			WEEKS.FULL[i] = names[i];
+		}
+	};
+
+	DateTime.setShortWeekNames = function (names) {
+		for (var i = 0, len = names.length; i < len; i++) {
+			if (!names[i]) {
+				continue;
+			}
+			WEEKS.ABB[i] = names[i];
+		}
+	};
+
+	/**
+	periods [ 'AM', 'PM' ]
+	*/
+	DateTime.setPeriod = function (period) {
+		if (period[0]) {
+			PERIOD.AM = period[0];
+		}
+		if (period[1]) {
+			PERIOD.PM = period[1];
+		}
+	};
+
+	DateTime.setMonthNames = function (names) {
+		for (var i = 0, len = names.length; i < len; i++) {
+			if (!names[i]) {
+				continue;
+			}
+			MONTHS.FULL[i] = names[i];
+		}
+	};
+
+	DateTime.setShortMonthNames = function (names) {
+		for (var i = 0, len = names.length; i < len; i++) {
+			if (!names[i]) {
+				continue;
+			}
+			MONTHS.ABB[i] = names[i];
+		}
+	};
+
+	DateTime.prototype.format = function (format) {
+
+		if (!format && this._defaultFormat) {
+			format = this._defaultFormat;
+		}
+
+		var str = '';
+		for (var i = 0, len = format.length; i < len; i++) {
+			str += this._convert(format[i]);
+		}
+		return str;
+	};
+
+	DateTime.prototype.now = function () {
+		return Date.now() - this._delta;
+	};
+
+	DateTime.prototype.epoch = function () {
+		return Math.floor(this.getTime() / 1000);
+	};
+
+	DateTime.prototype.getTime = function () {
+		return this._now.getTime();
+	};
+
+	DateTime.prototype.offsetInDays = function (offset) {
+		var next = new Date(this._now);
+		next.setDate(next.getDate() + offset);
+		this._now = next;
+		this._updateDelta();
+	};
+
+	DateTime.prototype.offsetInHours = function (offset) {
+		var next = new Date(this._now);
+		next.setHours(next.getHours() + offset);
+		this._now = next;
+		this._updateDelta();
+	};
+
+	DateTime.prototype.getDatesInRange = function (dateObj) {
+
+		if (dateObj instanceof DateTime) {
+			dateObj = dateObj._now;
+		}
+
+		if (this.getTime() >= dateObj.getTime()) {
+			throw new Error('start time cannot be greater than the end time');
+		}
+
+		var list = [];
+		var dir = dateObj.getTime() >= this.getTime() ? 1 : -1;
+		var diff = dateObj.getTime() - this.getTime() * dir;
+		var current = new DateTime(this._now);
+
+		while (diff > 0) {
+			list.push(current);
+			var next = new DateTime(current.getTime());
+			next.offsetInDays(1 * dir);
+			current = next;
+			diff -= ONEDAY;
+		}
+
+		return list;
+	};
+
+	DateTime.prototype.getHoursInRange = function (dateObj) {
+
+		if (dateObj instanceof DateTime) {
+			dateObj = dateObj._now;
+		}
+
+		if (this._now.getTime() >= dateObj.getTime()) {
+			throw new Error('start time cannot be greater than the end time');
+		}
+
+		var list = [];
+		var dir = dateObj.getTime() >= this._now.getTime() ? 1 : -1;
+		var diff = dateObj.getTime() - this._now.getTime() * dir;
+		var current = new DateTime(this._now);
+
+		while (diff > 0) {
+			list.push(current);
+			var next = new DateTime(current.getTime());
+			next.offsetInHours(1 * dir);
+			current = next;
+			diff -= ONEHOUR;
+		}
+
+		return list;
+	};
+
+	DateTime.prototype._convert = function (formatFragment) {
+		var converter = FORMATS[formatFragment];
+
+		if (converter) {
+			return converter(this._now);
+		}
+
+		// no converter 
+		return formatFragment;
+	};
+
+	DateTime.prototype._updateDelta = function () {
+		this._delta = this._created - this._now.getTime();
+	};
+
+	function getYear(d) {
+		var year = d.getFullYear().toString();
+		return year.substring(year.length - 2);
+	}
+
+	function getFullYear(d) {
+		return d.getFullYear();
+	}
+
+	function getMonth(d) {
+		return pad(d.getMonth() + 1);
+	}
+
+	function getMonthName(d) {
+		return MONTHS.ABB[d.getMonth()];
+	}
+
+	function getMonthFullName(d) {
+		return MONTHS.FULL[d.getMonth()];
+	}
+
+	function getDay(d) {
+		return pad(d.getDate());
+	}
+
+	function getMilitaryHours(d) {
+		return pad(d.getHours());
+	}
+
+	function getHours(d) {
+		var h = d.getHours();
+		var hours = h >= 12 ? h - 12 : h;
+		return pad(hours);
+	}
+
+	function getMinutes(d) {
+		return pad(d.getMinutes());
+	}
+
+	function getSeconds(d) {
+		return pad(d.getSeconds());
+	}
+
+	function getMillisec(d) {
+		return mpad(d.getMilliseconds());
+	}
+
+	function getWeekday(d) {
+		return WEEKS.ABB[d.getDay()];
+	}
+
+	function getFullWeekday(d) {
+		return WEEKS.FULL[d.getDay()];
+	}
+
+	function getPeriod(d) {
+		var hours = d.getHours();
+		if (hours <= 12) {
+			return PERIOD.AM;
+		}
+		return PERIOD.PM;
+	}
+
+	function pad(n) {
+		return n < 10 ? '0' + n : n;
+	}
+
+	function mpad(n) {
+		var padded = pad(n);
+		return typeof padded === 'string' || padded < 100 ? '0' + padded : padded;
+	}
+
+	module.exports = DateTime;
+
+/***/ }),
+/* 600 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	var INC = 'inc';
+	var DEC = 'dec';
+
+	/*
+	conf: {
+	        max: [number],
+	        min: [number],
+	        interval: [number], // update interval
+	        step: [number], // update step e.g. is step = 2, it will inc/dec 2 every interval
+	        type: [string], // inc: increment, dec: decrement
+	        init: [number], // cannot be greater than max and smaller than min
+		lastUpdate: [*number] // an optional timestamp to conrtol last update state
+	}
+	*/
+	function TimedNumber(conf) {
+		this.validate(conf);
+		this.conf = conf;
+		this.current = this.conf.init;
+		this.lastUpdate = this.conf.lastUpdate || Date.now();
+	}
+
+	// public
+	TimedNumber.prototype.getValue = function () {
+		switch (this.conf.type) {
+			case INC:
+				return this.calculateCurrentValueForInc();
+			case DEC:
+				return this.calculateCurrentValueForDec();
+		}
+	};
+
+	// public
+	TimedNumber.prototype.inc = function (value) {
+		if (!value || isNaN(value)) {
+			return false;
+		}
+		if (this.current + value > this.conf.max) {
+			return false;
+		}
+
+		if (this.current === this.conf.init) {
+			// initial mod
+			this.lastUpdate = Date.now();
+		}
+
+		// if type is inc, increasing means recovering
+		this.current += value;
+
+		this.lastUpdate = Date.now();
+
+		return true;
+	};
+
+	// public
+	TimedNumber.prototype.dec = function (value) {
+		if (!value || isNaN(value)) {
+			return false;
+		}
+		if (this.current - value < this.conf.min) {
+			return false;
+		}
+
+		if (this.current === this.conf.init) {
+			// initial mod
+			this.lastUpdate = Date.now();
+		}
+
+		// if type is dec, decreasing means recovering
+		this.current -= value;
+
+		this.lastUpdate = Date.now();
+
+		return true;
+	};
+
+	// public
+	TimedNumber.prototype.reset = function () {
+		this.current = this.conf.init;
+		this.lastUpdate = Date.now();
+	};
+
+	// public
+	TimedNumber.prototype.getMaxValue = function () {
+		return this.conf.max;
+	};
+
+	// public
+	TimedNumber.prototype.getMinValue = function () {
+		return this.conf.min;
+	};
+
+	// public
+	TimedNumber.prototype.getInterval = function () {
+		return this.conf.interval;
+	};
+
+	// public
+	TimedNumber.prototype.getStep = function () {
+		return this.conf.step;
+	};
+
+	// public
+	TimedNumber.prototype.getLastUpdate = function () {
+		return this.lastUpdate;
+	};
+
+	// public
+	TimedNumber.prototype.toObject = function () {
+		var obj = {};
+		obj.current = this.current;
+		obj.lastUpdate = this.lastUpdate;
+		for (var key in this.conf) {
+			obj[key] = this.conf[key];
+		}
+		return obj;
+	};
+
+	// private
+	TimedNumber.prototype.validate = function (conf) {
+		if (!conf.hasOwnProperty('max') || isNaN(conf.max)) {
+			throw new Error('invalid max: ' + conf.max);
+		}
+		if (!conf.hasOwnProperty('min') || isNaN(conf.min) || conf.min >= conf.max) {
+			throw new Error('invalid min: ' + conf.min);
+		}
+		if (!conf.hasOwnProperty('interval') || isNaN(conf.interval) || conf.interval <= 0) {
+			throw new Error('invalid interval: ' + conf.interval);
+		}
+		if (!conf.hasOwnProperty('type') || conf.type !== INC && conf.type !== DEC) {
+			throw new Error('invalid type: ' + conf.type);
+		}
+		if (!conf.hasOwnProperty('init') || isNaN(conf.init) || conf.init <= 0) {
+			throw new Error('invalid init: ' + conf.init);
+		}
+		if (!conf.hasOwnProperty('step') || isNaN(conf.step) || conf.step <= 0) {
+			throw new Error('invalid step: ' + conf.step);
+		}
+		if (conf.type === INC && conf.step > conf.max) {
+			throw new Error('step must not be greater than max');
+		}
+		if (conf.type === DEC && conf.step < conf.min) {
+			throw new Error('step must not be smaller than min');
+		}
+	};
+
+	// private
+	TimedNumber.prototype.calculateCurrentValueForInc = function () {
+		if (this.current === this.conf.max) {
+			return this.current;
+		}
+		var now = Date.now();
+		var timePast = now - this.lastUpdate;
+		var steps = Math.floor(timePast / this.conf.interval);
+		var incValue = this.conf.step * steps;
+		this.current = this.current + incValue <= this.conf.max ? this.current + incValue : this.conf.max;
+		if (incValue) {
+			this.lastUpdate = now;
+		}
+		return this.current;
+	};
+
+	// private
+	TimedNumber.prototype.calculateCurrentValueForDec = function () {
+		if (this.current === this.conf.min) {
+			return this.current;
+		}
+		var now = Date.now();
+		var timePast = now - this.lastUpdate;
+		var steps = Math.floor(timePast / this.conf.interval);
+		var decValue = this.conf.step * steps;
+		this.current = this.current - decValue >= this.conf.min ? this.current - decValue : this.conf.min;
+		if (decValue) {
+			this.lastUpdate = now;
+		}
+		return this.current;
+	};
+
+	module.exports = TimedNumber;
+
+/***/ }),
+/* 601 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	/*
+	conf: {
+		states: [array], // an array of states
+	        interval: [number], // update interval
+	        init: [number], // initial index of states array to start with
+		lastUpdate: [*number] // an optional timestamp to conrtol last update state
+		loop: [*bool] // if true the progress of states will be a loop
+	}
+	*/
+
+	function TimedState(conf) {
+		this.validate(conf);
+		this.conf = conf;
+		this.length = this.conf.states.length;
+		this.current = this.conf.init;
+		this.lastUpdate = this.conf.lastUpdate || Date.now();
+	}
+
+	// public
+	TimedState.prototype.getState = function () {
+		var now = Date.now();
+		var timePast = now - this.lastUpdate;
+		var steps = Math.floor(timePast / this.conf.interval);
+		var nextPos = steps + this.current;
+
+		if (nextPos >= this.length) {
+			if (this.conf.loop) {
+				nextPos = steps + this.current - this.length;
+			} else {
+				// we don't loop and stop at the end of the state
+				nextPos = this.length - 1;
+			}
+		}
+
+		return this.conf.states[nextPos];
+	};
+
+	// public
+	TimedState.prototype.forward = function (value) {
+		if (!value) {
+			// if value is not given it defaults  to 1
+			value = 1;
+		}
+		if (!value || isNaN(value)) {
+			return false;
+		}
+		if (this.current + value >= this.length) {
+			return false;
+		}
+
+		if (this.current === this.conf.init) {
+			// initial mod
+			this.lastUpdate = Date.now();
+		}
+
+		// move the current cursor of the array index forward
+		this.current += value;
+
+		this.lastUpdate = Date.now();
+
+		return true;
+	};
+
+	// public
+	TimedState.prototype.backward = function (value) {
+		if (!value) {
+			// if value is not given it defaults  to 1
+			value = 1;
+		}
+		if (!value || isNaN(value)) {
+			return false;
+		}
+		if (this.current - value < 0) {
+			return false;
+		}
+
+		if (this.current === this.conf.init) {
+			// initial mod
+			this.lastUpdate = Date.now();
+		}
+
+		// move the current cursor of the array index backward
+		this.current -= value;
+
+		this.lastUpdate = Date.now();
+
+		return true;
+	};
+
+	// public
+	TimedState.prototype.reset = function () {
+		this.current = this.conf.init;
+		this.lastUpdate = Date.now();
+	};
+
+	// public
+	TimedState.prototype.getStates = function () {
+		return this.conf.states.map(function (elm) {
+			return elm;
+		});
+	};
+
+	// public
+	TimedState.prototype.getInterval = function () {
+		return this.conf.interval;
+	};
+
+	// public
+	TimedState.prototype.getLastUpdate = function () {
+		return this.lastUpdate;
+	};
+
+	// public
+	TimedState.prototype.toObject = function () {
+		var obj = {};
+		obj.current = this.current;
+		obj.lastUpdate = this.lastUpdate;
+		for (var key in this.conf) {
+			obj[key] = this.conf[key];
+		}
+		return obj;
+	};
+
+	// private
+	TimedState.prototype.validate = function (conf) {
+		if (!conf.hasOwnProperty('states') || !Array.isArray(conf.states) || conf.states.length === 0) {
+			throw new Error('invalid states: ' + conf.states);
+		}
+		if (!conf.hasOwnProperty('interval') || isNaN(conf.interval) || conf.interval <= 0) {
+			throw new Error('invalid interval: ' + conf.interval);
+		}
+		if (!conf.hasOwnProperty('init') || isNaN(conf.init) || conf.init < 0) {
+			throw new Error('invalid init: ' + conf.init);
+		}
+	};
+
+	module.exports = TimedState;
+
+/***/ }),
+/* 602 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _reactBootstrap = __webpack_require__(171);
+
 	var React = __webpack_require__(12);
+
 
 	var ShowerTime = React.createClass({
 	  displayName: 'ShowerTime',
 
 	  propTypes: {
 	    name: React.PropTypes.string,
+	    date: React.PropTypes.string,
+	    id: React.PropTypes.int,
 	    start: React.PropTypes.string,
-	    end: React.PropTypes.string
+	    end: React.PropTypes.string,
+	    editOnClick: React.PropTypes.func,
+	    deleteOnClick: React.PropTypes.func
 	  },
 
+	  deleteTime: function deleteTime() {
+	    this.props.deleteOnClick(this.props.id);
+	  },
+	  editTime: function editTime() {
+	    this.props.editOnClick(this.props.id);
+	  },
 	  render: function render() {
 	    return React.createElement(
-	      'li',
+	      _reactBootstrap.Row,
 	      null,
-	      ' ',
-	      this.props.name,
-	      ' start: ',
-	      this.props.start,
-	      ' end: ',
-	      this.props.end
+	      React.createElement(
+	        _reactBootstrap.Col,
+	        { xs: 2, xsOffset: 1, md: 2, mdOffset: 1 },
+	        React.createElement(
+	          'p',
+	          null,
+	          this.props.name
+	        )
+	      ),
+	      React.createElement(
+	        _reactBootstrap.Col,
+	        { xs: 5, md: 2 },
+	        React.createElement(
+	          'p',
+	          null,
+	          this.props.start,
+	          ' -- ',
+	          this.props.end
+	        )
+	      ),
+	      React.createElement(
+	        _reactBootstrap.Col,
+	        { xs: 1, md: 2 },
+	        React.createElement(
+	          _reactBootstrap.Button,
+	          { bsSize: 'xsmall', onClick: this.editTime, bsStyle: 'info' },
+	          'Edit'
+	        )
+	      ),
+	      React.createElement(
+	        _reactBootstrap.Col,
+	        { xs: 1, md: 2 },
+	        React.createElement(
+	          _reactBootstrap.Button,
+	          { bsSize: 'xsmall', onClick: this.deleteTime, bsStyle: 'danger' },
+	          'Delete'
+	        )
+	      )
 	    );
 	  }
 	});

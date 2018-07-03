@@ -9,7 +9,7 @@ const PeopleList = React.createClass({
 
   getInitialState () {
     return {
-      dropDownTitle: 'Select a Name'
+      dropDownTitle: 'Select a name'
     }
   },
 
