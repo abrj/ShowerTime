@@ -9,11 +9,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('wwwroot'))
 routes(app, DB);
+const PORT = process.env.PORT || 3000
+const SCHEME = 'http://'
+const HOST = process.env.HOST || SCHEME + 'localhost:' + PORT
 
 var server = app.listen(3000, function () {
-    const dbPath = "database.db"
+    const dbPath = process.env.DB_CONNECTIONSTRING || "database.db"
     DB.setup(dbPath, ["Anders", "Mira", "Camilla", "Andreas", "Guest"], fs.existsSync(dbPath))
 
-    console.log("app running on port.", server.address().port);
+    //console.log("app running on.", server.address().port);
+    console.log("App running on " + HOST)
 
 });
