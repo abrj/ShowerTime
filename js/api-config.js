@@ -8,4 +8,4 @@ if (hostname === 'andersj.io') {
   backendHost = 'http://localhost:3000'
 }
 
-export const HOST = `${backendHost}`
+export const HOST = backendHost
