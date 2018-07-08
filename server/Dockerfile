@@ -14,8 +14,9 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+RUN mkdir /usr/src/database
 
 EXPOSE 3000
 ENV HOST http://andersj.io
-ENV DB_PRODUCTION database.db
+ENV DB_PRODUCTION /usr/src/database/database.db
 CMD [ "npm", "run", "run" ]
