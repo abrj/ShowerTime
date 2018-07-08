@@ -4,10 +4,7 @@ const PeopleList = require('./PeopleList')
 const TimePicker = require('./TimePicker')
 const ShowerTime = require('./ShowerTime')
 import Axios from 'axios'
-
-const PORT = process.env.PORT || 3000
-const SCHEME = 'http://'
-const HOST = process.env.HOST || SCHEME + 'localhost:' + PORT
+import { HOST } from './api-config'
 
 const Landing = React.createClass({
   getInitialState () {
@@ -33,7 +30,7 @@ const Landing = React.createClass({
   },
 
   getShowerTimes () {
-    Axios.get(HOST+'/showertimes', '')
+    Axios.get(HOST + '/showertimes', '')
     .then(res => {
       console.log(res.data)
       console.log(res.data.times)
@@ -77,7 +74,7 @@ const Landing = React.createClass({
       startTime: start,
       endTime: end
     })
-    Axios.post(HOST+'/submit', {name: this.state.person, start: start, end: end})
+    Axios.post(HOST + '/submit', {name: this.state.person, start: start, end: end})
       .then(res => {
         this.getShowerTimes()
         this.setState({
@@ -89,7 +86,7 @@ const Landing = React.createClass({
 
   deleteTime (id) {
     console.log(id)
-    Axios.post(HOST+'/delete', {database_id: id})
+    Axios.post(HOST + '/delete', {database_id: id})
     this.getShowerTimes()
   },
 
