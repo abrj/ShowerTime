@@ -1,11 +1,13 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var routes = require("./routes/routes.js");
+var cors = require('cors')
 var DB = require('./db.js')
 var app = express();
 var fs = require('fs');
 var http = require('http');
 
+app.use(cors())
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
