@@ -2,7 +2,7 @@ let backendHost
 
 const hostname = window && window.location && window.location.hostname
 
-if (hostname === 'andersj.io') {
+if (hostname === 'showertime.andersj.io') {
   backendHost = 'http://andersj.io'
 } else {
   backendHost = 'http://localhost:3000'
