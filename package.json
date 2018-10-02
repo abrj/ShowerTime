@@ -6,7 +6,7 @@
   "scripts": {
     "test": "standard",
     "build": "webpack",
-    "watch": "webpack --watch"
+    "watch": " webpack --env.API_HOST=http://localhost:8000 --watch"
   },
   "author": "Brian Holt <btholt@gmail.com>",
   "license": "MIT",
@@ -14,8 +14,12 @@
     "axios": "0.9.1",
     "basic-react-timepicker": "^1.0.0",
     "bootstrap": "^3.3.7",
+    "create-react-app": "^1.5.2",
     "css-loader": "^0.28.11",
+    "dotenv-webpack": "^1.5.7",
     "express": "4.13.4",
+    "fs": "0.0.1-security",
+    "http-server": "^0.11.1",
     "lodash": "4.6.1",
     "node-datetime": "^2.0.6",
     "react": "^0.14.9",
@@ -27,6 +31,7 @@
     "reactstrap": "^6.0.1",
     "redux": "^3.3.1",
     "semantic-ui-react": "^0.81.1",
+    "serve": "^10.0.0",
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1"
   },
@@ -38,6 +43,7 @@
     "babel-register": "^6.5.2",
     "chai": "^3.5.0",
     "copy-webpack-plugin": "^4.5.1",
+    "dotenv": "^6.0.0",
     "enzyme": "^2.0.0",
     "eslint": "^2.2.0",
     "eslint-config-standard": "^5.1.0",
@@ -54,7 +60,8 @@
     "nyc": "^6.0.0",
     "react-addons-test-utils": "^0.14.7",
     "sinon": "^1.17.3",
-    "webpack": "^1.12.13"
+    "webpack": "^1.15.0",
+    "webpack-cli": "^3.1.0"
   },
   "directories": {
     "test": "test"

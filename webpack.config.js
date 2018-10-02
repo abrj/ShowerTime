@@ -1,5 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const webpack = require('webpack')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
   context: __dirname,
@@ -12,6 +14,10 @@ module.exports = {
     new HtmlWebpackPlugin({  // Also generate a test.html
       title: 'my apop',
       template: 'index.html'
+    }),
+    new Dotenv({
+      path: '.env', // Path to .env file (this is the default)
+      // safe: true // load .env.example (defaults to "false" which does not use dotenv-safe)
     })
   ],
   resolve: {

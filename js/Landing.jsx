@@ -5,6 +5,7 @@ const TimePicker = require('./TimePicker')
 const ShowerTime = require('./ShowerTime')
 import Axios from 'axios'
 const CONFIG = require('./api-config')
+// require('dotenv').config()
 
 const Landing = React.createClass({
   getInitialState () {
@@ -31,6 +32,8 @@ const Landing = React.createClass({
 
   getShowerTimes () {
     console.log(CONFIG.HOST)
+    console.log('HOST: ' + process.env.API_HOST)
+    console.log('PORT: ' + process.env.API_PORT)
     let requestAddress = String(CONFIG.HOST).concat('/showertimes')
     Axios.get(requestAddress, '')
     .then(res => {
