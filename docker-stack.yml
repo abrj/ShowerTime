@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  api:
+    image: api
+    environment:
+      - "API_HOST=showertime.andersj.io"
+      - "API_PORT=3000"
+    ports:
+      - "3000:3000"
+    networks:
+      - traefik_default
+    deploy:
+
+  ui:
+    image: ui
+    environment:
+        - "API_HOST=showertime.andersj.io"
+        - "API_PORT=3000"
+        - "REACT_APP_PORT=4000"
+        - "REACT_APP_HOST=showertime.andersj.io"
+    ports:
+      - "4000:4000"
+    networks:
+      - traefik_default
+    deploy:
+      labels:
+        traefik.docker.network: traefik_default
+        traefik.frontend.rule: Host:showertime.andersj.io
+        traefik.port: 4000
+
+
+network:
+  traefik_default:
+    external: true
+
